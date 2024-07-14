@@ -1,27 +1,37 @@
 from flask import Flask, request, jsonify
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import Sequential
+from tensorflow.keras import layers
 from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.optimizers import Adam
 from PIL import Image
 import numpy as np
 
+print(f"TensorFlow version: {tf.__version__}")
 
 app = Flask(__name__)
 
-def get_model():
-    model_path = 'model_architecture_epoch20_16.h5' 
-    try:
-        model = load_model(model_path)
-        print(f"Model {model_path} loaded successfully!")
-        return model
-    except Exception as e:
-        print(f"Error loading model: {str(e)}")
-        raise 
+input_shape = (128, 128, 3)
+batch_size = 16
 
-# model = get_model()
-# print(model.summary())
+def init_model():
+    resnet = ResNet50(weights='imagenet', include_top=False, input_shape=input_shape)
+    model = Sequential([
+        resnet,
+        layers.GlobalAveragePooling2D(),
+        layers.Dense(512, activation='relu'),
+        layers.BatchNormalization(),
+        layers.Dense(2, activation='softmax')
+    ])
+    model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
+
+trained_model = init_model()
+trained_model.build((None, *input_shape))
+trained_model.load_weights('model_bs16_ep10.h5')
 
 def preprocess_image(image, target_size):
     if image.mode != "RGB":
@@ -45,18 +55,16 @@ def predict():
         img = Image.open(file)
         processed_img = preprocess_image(img, target_size=(128, 128))
 
-        model = get_model()
-
         if processed_img.shape == (1, 128, 128, 3):
-            prediction = model.predict(processed_img).tolist()
-
+            predictions = trained_model.predict(processed_img)
+            fake_prob, real_prob = predictions[0]
             response = {
                 'prediction': {
-                    'fake': prediction[0][0],
-                    'real': prediction[0][1]
-                }
+                    'fake': float(fake_prob),
+                    'real': float(real_prob)
+                },
+                'accuracy': f"{100 * max(fake_prob, real_prob):.2f}%"
             }
-
             return jsonify(response)
         else:
             return jsonify({'error': 'Input image shape doesn\'t match model input shape.'})
@@ -64,10 +72,9 @@ def predict():
     except Exception as e:
         return jsonify({'error': str(e)})
 
-
 @app.route('/')
 def index():
     return "Welcome to Deep Fake Images Prediction", 200
 
-if __name__ == '__main__':
-    app.run(port=5000)
+# if __name__ == '__main__':
+#     app.run(port=5000)
