@@ -3,7 +3,7 @@ ob_start();
 session_start();
 require 'config.php'; 
 
-$new_data = array(); // Inisialisasi array untuk menyimpan data baru yang diinputkan
+$new_data = array();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nama_user = strip_tags($_POST['nama_user']);
@@ -21,9 +21,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $check = getimagesize($_FILES['image']['tmp_name']);
         if ($check !== false) {
             if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-                $image = $new_filename; 
+                $image = $new_filename;
+
+                // Send image to Flask API
+                $api_url = 'http://deepfake.scholarshipaquinas.com/deepfake/predict';
+                $cfile = new CURLFile($target_file, mime_content_type($target_file), $new_filename);
+                $data = array('image' => $cfile);
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $api_url);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                $result = json_decode($response, true);
+
+                if (isset($result['prediction'])) {
+                    $prediction = $result['prediction'];
+                    $accuracy = $result['accuracy'];
+                    $result_prediction = ($prediction['fake'] > $prediction['real'] ? 'Fake' : 'Real');
+
+                    // Save data to database
+                    $sql = 'INSERT INTO users (nama_user, image, result, accuracy) VALUES (?, ?, ?, ?)';
+                    $stmt = $config->prepare($sql);
+                    $stmt->bindParam(1, $nama_user);
+                    $stmt->bindParam(2, $image);
+                    $stmt->bindParam(3, $result_prediction); // Bind hasil prediksi ke kolom result
+                    $stmt->bindParam(4, $accuracy); // Bind akurasi ke kolom accuracy
+
+                    if ($stmt->execute()) {
+                        $sql_get_new_data = 'SELECT nama_user, image, result, accuracy FROM users WHERE id = LAST_INSERT_ID()';
+                        $stmt_get_new_data = $config->query($sql_get_new_data);
+                        $new_data = $stmt_get_new_data->fetch(PDO::FETCH_ASSOC);
+                        $new_data['result_prediction'] = $result_prediction;
+                        $new_data['accuracy'] = $accuracy;
+                    } else {
+                        $errorInfo = $stmt->errorInfo();
+                        echo '<script>alert("Gagal mengunggah data' . $errorInfo[2] . '");</script>';
+                    }
+                } else {
+                    echo '<script>alert("Gagal mendapatkan prediksi dari API.");</script>';
+                }
             } else {
-                echo '<script>alert("Data yang diunggah bukan data gambar");</script>';
+                echo '<script>alert("Gagal mengunggah file.");</script>';
                 exit();
             }
         } else {
@@ -31,34 +74,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         }
     } else {
-        echo '<script>alert("Tidak ada file yang di unggah");</script>';
+        echo '<script>alert("Tidak ada file yang diunggah");</script>';
         exit();
-    }
-
-    try {
-        // Menyisipkan data ke dalam tabel
-        $sql = 'INSERT INTO users (nama_user, image) VALUES (?, ?)';
-        $stmt = $config->prepare($sql);
-        $stmt->bindParam(1, $nama_user);
-        $stmt->bindParam(2, $image);
-
-        if ($stmt->execute()) {
-            // Mengambil data yang baru saja di-insert
-            $sql_get_new_data = 'SELECT nama_user, image FROM users WHERE id = LAST_INSERT_ID()';
-            $stmt_get_new_data = $config->query($sql_get_new_data);
-            $new_data = $stmt_get_new_data->fetch(PDO::FETCH_ASSOC);
-        } else {
-            $errorInfo = $stmt->errorInfo();
-            echo '<script>alert("Gagal mengunggah data' . $errorInfo[2] . '");</script>';
-        }
-    } catch (PDOException $e) {
-        echo '<script>alert("Database error: ' . $e->getMessage() . '");</script>';
     }
 }
 ?>
-
-
-
 
 
 
@@ -232,11 +252,11 @@ https://templatemo.com/tm-535-softy-pinko
     <section class="section padding-bottom-100">
     <div class="container" id="Mulai">
         <div class="row">
-                <div class="col-lg-12">
-                    <div class="center-heading">
-                        <h2 class="section-title">Mulai Deteksi</h2>
-                    </div>
+            <div class="col-lg-12">
+                <div class="center-heading">
+                    <h2 class="section-title">Mulai Deteksi</h2>
                 </div>
+            </div>
             <!-- Form Container -->
             <div class="col-md-4">
                 <div class="form-container1">
@@ -244,14 +264,14 @@ https://templatemo.com/tm-535-softy-pinko
                         <div class="form-group">
                             <div class="floating-label-container">
                                 <label for="nama_user" class="floating-label">Nama</label>
-                                <input type="text" id="nama_user" name="nama_user" class="form-control" placeholder=" " required>
+                                <input type="text" id="nama_user" name="nama_user" class="form-control" placeholder="" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <input type="file" id="image" name="image" class="upload-button" required>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="save-button">Simpan</button>
+                            <button type="submit" class="save-button">Unggah File</button>
                         </div>
                     </form>
                 </div>
@@ -260,11 +280,11 @@ https://templatemo.com/tm-535-softy-pinko
             <?php if (!empty($new_data)): ?>
             <div class="col-md-8">
                 <div class="uploaded-info">
-                    <p><b>Nama:</b> <?php echo $new_data['nama_user']; ?></p>
+                    <p><b>Nama:</b> <?php echo htmlspecialchars($new_data['nama_user']); ?></p>
                     <br>
-                    <img src="uploads/<?php echo $new_data['image']; ?>" alt="Uploaded Image"style= "width: 500px; height: 300px;" class="centered-image">
-                    <p><b>Hasil:</b></p>
-                    <p><b>Deskripsi:</b></p>
+                    <img src="uploads/<?php echo htmlspecialchars($new_data['image']); ?>" alt="Uploaded Image" style="width: 500px; height: 300px;" class="centered-image">
+                    <p><b>Hasil:</b> <?= htmlspecialchars($new_data['result_prediction']); ?></p>
+                    <p><b>Akurasi:</b> <?= htmlspecialchars($new_data['accuracy']); ?></p>
                 </div>
             </div>
             <?php endif; ?>
@@ -571,4 +591,3 @@ https://templatemo.com/tm-535-softy-pinko
 
   </body>
 </html>
-
