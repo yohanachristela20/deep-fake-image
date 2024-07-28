@@ -1,0 +1,8 @@
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^deepfake\.scholarshipaquinas\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.deepfake\.scholarshipaquinas\.com$
+RewriteRule ^/?$ "https\:\/\/deepfake\.scholarshipaquinas\.com\/index\.php" [R=301,L]
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+<IfModule Litespeed>
+</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END

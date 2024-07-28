@@ -1,0 +1,9 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/scholar3/flask_deepfake"
+PassengerBaseURI "/flask_deepfake"
+PassengerPython "/home/scholar3/virtualenv/flask_deepfake/3.9/bin/python"
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^deepfake\.scholarshipaquinas\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.deepfake\.scholarshipaquinas\.com$
+RewriteRule ^/?$ "https\:\/\/deepfake\.scholarshipaquinas\.com\/index\.php" [R=301,L]
