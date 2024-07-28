@@ -1,0 +1,27 @@
+[15-Jul-2024 16:39:57 Asia/Jakarta] PHP Warning:  Undefined array key "nama_user" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 17
+[15-Jul-2024 16:40:08 Asia/Jakarta] PHP Warning:  Undefined array key "nama_user" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 39
+[15-Jul-2024 16:40:08 Asia/Jakarta] PHP Warning:  Undefined array key "prediction" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:40:08 Asia/Jakarta] PHP Warning:  Trying to access array offset on value of type null in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:40:08 Asia/Jakarta] PHP Warning:  Undefined array key "prediction" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:40:08 Asia/Jakarta] PHP Warning:  Trying to access array offset on value of type null in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:40:08 Asia/Jakarta] PHP Warning:  Undefined array key "accuracy" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 42
+[15-Jul-2024 16:40:08 Asia/Jakarta] PHP Warning:  Undefined array key "image_path" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 43
+[15-Jul-2024 16:40:20 Asia/Jakarta] PHP Warning:  Undefined array key "nama_user" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 17
+[15-Jul-2024 16:40:34 Asia/Jakarta] PHP Warning:  Undefined array key "nama_user" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 39
+[15-Jul-2024 16:40:34 Asia/Jakarta] PHP Warning:  Undefined array key "prediction" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:40:34 Asia/Jakarta] PHP Warning:  Trying to access array offset on value of type null in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:40:34 Asia/Jakarta] PHP Warning:  Undefined array key "prediction" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:40:34 Asia/Jakarta] PHP Warning:  Trying to access array offset on value of type null in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:40:34 Asia/Jakarta] PHP Warning:  Undefined array key "accuracy" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 42
+[15-Jul-2024 16:40:34 Asia/Jakarta] PHP Warning:  Undefined array key "image_path" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 43
+[15-Jul-2024 16:41:37 Asia/Jakarta] PHP Warning:  Undefined array key "nama_user" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 17
+[15-Jul-2024 16:41:50 Asia/Jakarta] PHP Warning:  Undefined array key "nama_user" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 39
+[15-Jul-2024 16:41:50 Asia/Jakarta] PHP Warning:  Undefined array key "prediction" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:41:50 Asia/Jakarta] PHP Warning:  Trying to access array offset on value of type null in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:41:50 Asia/Jakarta] PHP Warning:  Undefined array key "prediction" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:41:50 Asia/Jakarta] PHP Warning:  Trying to access array offset on value of type null in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 41
+[15-Jul-2024 16:41:50 Asia/Jakarta] PHP Warning:  Undefined array key "accuracy" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 42
+[15-Jul-2024 16:41:50 Asia/Jakarta] PHP Warning:  Undefined array key "image_path" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 43
+[15-Jul-2024 16:44:47 Asia/Jakarta] PHP Warning:  Undefined array key "nama_user" in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 17
+[15-Jul-2024 16:44:49 Asia/Jakarta] PHP Warning:  file_get_contents(https://deepfake.scholarshipaquinas.com/flask_deepfake/predict): Failed to open stream: HTTP request failed! HTTP/1.1 502 Bad Gateway
+ in /home/scholar3/deepfake.scholarshipaquinas.com/test.php on line 29
